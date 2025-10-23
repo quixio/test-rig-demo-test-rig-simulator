@@ -16,7 +16,7 @@ deployments:
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: gateway
+      urlPrefix: ecu
   - name: labview-sim
     application: labview-sim
     version: latest
