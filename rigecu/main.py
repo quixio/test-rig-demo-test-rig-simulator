@@ -6,9 +6,8 @@ from flasgger import Swagger
 from waitress import serve
 import time
 import random
-
+import requests
 from flask_cors import CORS
-
 from setup_logging import get_logger
 
 # for local dev, load env vars from a .env file
@@ -42,7 +41,6 @@ def post_data_without_key():
     data = request.json
     logger.debug(f"{data}")
 
-    import requests
 
     # Extract test_id and ramp_delay from the request
     test_id = data.get("test_id")
