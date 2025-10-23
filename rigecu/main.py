@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 service_url = os.environ["Quix__Deployment__Network__PublicUrl"]
-data_api_endpoint = os.environ("data_api_endpoint", "")
+data_api_endpoint = os.getenv("data_api_endpoint", "")
 
 logger = get_logger()
 
