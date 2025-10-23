@@ -9,17 +9,13 @@ import time
 from flask_cors import CORS
 
 from setup_logging import get_logger
-from quixstreams import Application
 
 # for local dev, load env vars from a .env file
 from dotenv import load_dotenv
 load_dotenv()
 
 service_url = os.environ["Quix__Deployment__Network__PublicUrl"]
-
-quix_app = Application()
-topic = quix_app.topic(os.environ["output"])
-producer = quix_app.get_producer()
+data_api_endpoint = os.environ("data_api_endpoint", "")
 
 logger = get_logger()
 
@@ -29,8 +25,8 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['SWAGGER'] = {
-    'title': 'HTTP API Source',
-    'description': 'Test your HTTP API with this Swagger interface. Send data and see it arrive in Quix.',
+    'title': 'Test Rig ECU Simulator',
+    'description': 'This API is intended to simulate a test rig.',
     'uiversion': 3
 }
 
@@ -40,71 +36,59 @@ swagger = Swagger(app)
 def redirect_to_swagger():
     return redirect("/apidocs/")
 
-@app.route("/data/", methods=['POST'])
+@app.route("/ecu/start", methods=['POST'])
 def post_data_without_key():
-    """
-    Post data without key
-    ---
-    parameters:
-      - in: body
-        name: body
-        schema:
-          type: object
-          properties:
-            some_value:
-              type: string
-    responses:
-      200:
-        description: Data received successfully
-    """
     data = request.json
     logger.debug(f"{data}")
 
-    producer.produce(topic.name, json.dumps(data))
+    import requests
 
-    # Return a normal 200 response; CORS headers are added automatically by Flask-CORS 
-    return Response(status=200)
+    # Extract test_id and ramp_delay from the request
+    test_id = data.get("test_id")
+    ramp_delay = data.get("ramp_delay", 6000)  # Default to 6000ms if not provided
 
-@app.route("/data/<key>", methods=['POST'])
-def post_data_with_key(key: str):
-    """
-    Post data with a key
-    ---
-    parameters:
-      - in: path
-        name: key
-        type: string
-        required: true
-      - in: body
-        name: body
-        schema:
-          type: object
-          properties:
-            some_value:
-              type: string
-    responses:
-      200:
-        description: Data received successfully
-    """
-    data = request.json
-    logger.debug(f"{data}")
+    set_speed = data.get("set_speed", 0.5)  # Default to 0.5 if not provided
+    start_time = time.time() * 1000  # Start time in milliseconds
 
-    producer.produce(topic.name, json.dumps(data), key.encode())
+    def generate_data():
+        # Calculate values based on set_speed
+        base_voltage = 14.9 - (set_speed * 1.6)
+        base_current = 8000 + (set_speed * 6000)
+        base_load_cell = -140000 + (set_speed * 10000)
+
+        # Generate fluctuating values
+        voltage_v = base_voltage + random.uniform(-0.1, 0.1)
+        current_ma = base_current + random.uniform(-500, 500)
+        load_cell_raw_value = base_load_cell + random.uniform(-5000, 5000)
+
+        # Current timestamp in milliseconds
+        timestamp = int(time.time() * 1000 - start_time)
+
+        return {
+            "timestamp": timestamp,
+            "ina260": {
+                "voltage_v": voltage_v,
+                "current_ma": current_ma
+            },
+            "load_cell": {
+                "raw_value": load_cell_raw_value,
+                "is_ready": True
+            },
+            "set_speed": set_speed
+        }
+
+    # Send data every 50ms for the duration of ramp_delay
+    interval = 50  # in milliseconds
+    end_time = start_time + ramp_delay
+
+    while time.time() * 1000 < end_time:
+        data_to_send = generate_data()
+        if(data_api_endpoint != ""):
+            response = requests.post(data_api_endpoint, json={"test_id": test_id, "data": [data_to_send]})
+        logger.debug(f"Sent data: {data_to_send}, Response: {response.status_code}")
+        time.sleep(interval / 1000)  # Convert milliseconds to seconds
 
     return Response(status=200)
 
 if __name__ == '__main__':
-    print("=" * 60)
-    print(" " * 20 + "CURL EXAMPLE")
-    print("=" * 60)
-    print(
-        f"""
-curl -L -X POST \\
-    -H 'Content-Type: application/json' \\
-    -d '{{"key": "value"}}' \\
-    {service_url}/data
-    """
-    )
-    print("=" * 60)
-
     serve(app, host="0.0.0.0", port=80)

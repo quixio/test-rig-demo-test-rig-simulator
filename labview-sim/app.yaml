@@ -1,0 +1,6 @@
+name: rigecu
+language: python
+dockerfile: dockerfile
+runEntryPoint: main.py
+defaultFile: main.py
+libraryItemId: web-api-gateway

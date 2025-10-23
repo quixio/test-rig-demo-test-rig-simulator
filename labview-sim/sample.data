@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "timestamp": 150460,
+      "ina260": {
+        "voltage_v": 14.85375,
+        "current_ma": 9408.75
+      },
+      "load_cell": {
+        "raw_value": -149635,
+        "is_ready": true
+      },
+      "set_speed": 0.5
+    },
+    {
+      "timestamp": 150465,
+      "ina260": {
+        "voltage_v": 14.83,
+        "current_ma": 9557.5
+      },
+      "load_cell": {
+        "raw_value": -149635,
+        "is_ready": true
+      },
+      "set_speed": 0.5
+    }
+  ]
+}
