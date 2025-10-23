@@ -1,4 +1,4 @@
-name: rigecu
+name: labview-sim
 language: python
 dockerfile: dockerfile
 runEntryPoint: main.py
