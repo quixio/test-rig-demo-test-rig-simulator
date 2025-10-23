@@ -3,3 +3,8 @@
 
 metadata:
   version: 1.0
+
+
+# This section describes the Topics of the data pipeline
+topics:
+  - name: http-source
