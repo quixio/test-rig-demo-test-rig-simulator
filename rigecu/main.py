@@ -85,7 +85,7 @@ def post_data_without_key():
             response = requests.post(data_api_endpoint, json={"test_id": test_id, "data": [data_to_send]})
             logger.debug(f"Sent data: {data_to_send}, Response: {response.status_code}")
         else:
-            logger.debug(f"Sent data: {data_to_send}, Response: Not sent (no endpoint configured)")
+            logger.debug(f"Sent data: {test_id} :: {data_to_send}, Response: Not sent (no endpoint configured)")
         time.sleep(interval / 1000)  # Convert milliseconds to seconds
 
     return Response(status=200)
