@@ -2,7 +2,7 @@ import os
 import datetime
 import json
 import requests
-from flask import Flask, request, Response, redirect
+from flask import Flask, request, Response, redirect, jsonify
 from waitress import serve
 import time
 
@@ -158,6 +158,28 @@ def home_page():
                 max-width: 500px;
                 height: auto;
             }}
+
+            #status-message {{
+                margin-top: 10px;
+                padding: 8px;
+                font-size: 11px;
+                display: none;
+                border: 2px inset #dfdfdf;
+                border-right-color: #808080;
+                border-bottom-color: #808080;
+            }}
+
+            #status-message.success {{
+                background-color: #90EE90;
+                color: #008000;
+                display: block;
+            }}
+
+            #status-message.error {{
+                background-color: #FFB6C6;
+                color: #8B0000;
+                display: block;
+            }}
         </style>
     </head>
     <body>
@@ -168,7 +190,7 @@ def home_page():
                 <span>Test Data Entry</span>
                 <span>_</span>
             </div>
-            <form method="POST" action="/submit-test">
+            <form id="testForm">
                 <div class="form-group">
                     <label for="testid">Test ID:</label>
                     <input type="text" id="testid" name="testid" value="{current_test_id}" required>
@@ -224,8 +246,10 @@ def home_page():
                     <input type="text" id="holdtime" name="holdtime" value="30" required>
                 </div>
                 
+                <div id="status-message"></div>
+                
                 <div class="button-group">
-                    <button type="submit">Run Test</button>
+                    <button type="button" id="runBtn">Run Test</button>
                     <button type="reset">Clear</button>
                 </div>
             </form>
@@ -235,41 +259,89 @@ def home_page():
                 <img src="/image_1.png" alt="Test Image">
             </div>
         </div>
+
+        <script>
+            document.getElementById('runBtn').addEventListener('click', async function(e) {{
+                e.preventDefault();
+                
+                const formData = new FormData(document.getElementById('testForm'));
+                const data = {{
+                    testid: formData.get('testid'),
+                    campaignid: formData.get('campaignid'),
+                    sampleid: formData.get('sampleid'),
+                    environmentid: formData.get('environmentid'),
+                    batteryid: formData.get('batteryid'),
+                    fanid: formData.get('fanid'),
+                    motorid: formData.get('motorid'),
+                    shroudid: formData.get('shroudid'),
+                    throttle: formData.get('throttle'),
+                    operator: formData.get('operator'),
+                    holdtime: formData.get('holdtime')
+                }};
+                
+                try {{
+                    const response = await fetch('/api/submit-test', {{
+                        method: 'POST',
+                        headers: {{
+                            'Content-Type': 'application/json'
+                        }},
+                        body: JSON.stringify(data)
+                    }});
+                    
+                    const result = await response.json();
+                    const statusMsg = document.getElementById('status-message');
+                    
+                    if (response.ok) {{
+                        statusMsg.className = 'success';
+                        statusMsg.textContent = 'Test submitted successfully!';
+                    }} else {{
+                        statusMsg.className = 'error';
+                        statusMsg.textContent = 'Error: ' + (result.error || 'Failed to submit test');
+                    }}
+                }} catch (error) {{
+                    const statusMsg = document.getElementById('status-message');
+                    statusMsg.className = 'error';
+                    statusMsg.textContent = 'Error: ' + error.message;
+                }}
+            }});
+        </script>
     </body>
     </html>
     """
     return Response(html, mimetype='text/html', status=200)
 
-@app.route("/submit-test", methods=['POST'])
-def submit_test():
-    # Handle the form submission
+@app.route("/api/submit-test", methods=['POST'])
+def api_submit_test():
+    # Handle the AJAX form submission
     global current_test_id
     try:
+        data = request.get_json()
+        
         # Format the data according to the API specification
         configuration = {
-            "test_id": request.form.get('testid'),
-            "campaign_id": request.form.get('campaignid'),
-            "environment_id": request.form.get('environmentid'),
-            "sample_id": request.form.get('sampleid'),
-            "operator": request.form.get('operator'),
+            "test_id": data.get('testid'),
+            "campaign_id": data.get('campaignid'),
+            "environment_id": data.get('environmentid'),
+            "sample_id": data.get('sampleid'),
+            "operator": data.get('operator'),
             "sensors": {
                 "throttle": {
-                    "value": request.form.get('throttle')
+                    "value": data.get('throttle')
                 },
                 "hold_time": {
-                    "value": request.form.get('holdtime')
+                    "value": data.get('holdtime')
                 },
                 "battery": {
-                    "id": request.form.get('batteryid')
+                    "id": data.get('batteryid')
                 },
                 "motor": {
-                    "id": request.form.get('motorid')
+                    "id": data.get('motorid')
                 },
                 "shroud": {
-                    "id": request.form.get('shroudid')
+                    "id": data.get('shroudid')
                 },
                 "fan": {
-                    "id": request.form.get('fanid')
+                    "id": data.get('fanid')
                 }
             },
             "timestamp": datetime.datetime.now().isoformat()
@@ -297,9 +369,9 @@ def submit_test():
         # Post ECU data to a different API
         try:
             ecu_data = {
-                "test_id": request.form.get('testid'),
-                "speeds": [request.form.get('throttle')],
-                "ramp_delay": request.form.get('holdtime')
+                "test_id": data.get('testid'),
+                "speeds": [data.get('throttle')],
+                "ramp_delay": data.get('holdtime')
             }
             
             logger.info(f"ECU data formatted: {json.dumps(ecu_data)}")
@@ -322,12 +394,11 @@ def submit_test():
         # Increment the test ID for the next submission
         current_test_id = increment_test_id(current_test_id)
         
-        # Redirect back to home page with incremented test ID
-        return redirect("/")
+        return jsonify({"success": True, "next_test_id": current_test_id}), 200
     
     except Exception as e:
         logger.error(f"Error submitting test: {str(e)}")
-        return Response("Error submitting test", status=500)
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     serve(app, host="0.0.0.0", port=80)
