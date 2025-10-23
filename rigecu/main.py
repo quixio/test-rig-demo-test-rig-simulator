@@ -41,12 +41,11 @@ def post_data_without_key():
     data = request.json
     logger.debug(f"{data}")
 
-
     # Extract test_id and ramp_delay from the request
     test_id = data.get("test_id")
-    ramp_delay = data.get("ramp_delay", 6000)  # Default to 6000ms if not provided
+    ramp_delay = int(data.get("ramp_delay", 6000))  # Default to 6000ms if not provided
 
-    set_speed = data.get("set_speed", 0.5)  # Default to 0.5 if not provided
+    set_speed = float(data.get("set_speed", 0.5))  # Default to 0.5 if not provided
     start_time = time.time() * 1000  # Start time in milliseconds
 
     def generate_data():
