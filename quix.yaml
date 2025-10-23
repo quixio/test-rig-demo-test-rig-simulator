@@ -17,6 +17,12 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: labview-sim
+    variables:
+      - name: TEST_API_URL
+        inputType: FreeText
+      - name: ECU_API_URL
+        inputType: FreeText
+        value: https://ecu-quixers-testrigdemotestrigsimulator-prod.az-france-0.app.quix.io/ecu/start
   - name: Rig ECU Sim
     application: rigecu
     version: latest
