@@ -1,5 +1,6 @@
-flask
-flask_cors
+Flask==2.3.3
+flask-cors==4.0.0
+waitress==2.1.2
+python-dotenv==1.0.0
+requests==2.31.0
 flasgger==0.9.7b2
-waitress
-python-dotenv
