@@ -261,6 +261,15 @@ def home_page():
         </div>
 
         <script>
+            function incrementTestId(testId) {{
+                const parts = testId.split('-');
+                if (parts.length === 2 && /^\d+$/.test(parts[1])) {{
+                    const number = parseInt(parts[1]) + 1;
+                    return parts[0] + '-' + String(number).padStart(3, '0');
+                }}
+                return testId;
+            }}
+
             document.getElementById('runBtn').addEventListener('click', async function(e) {{
                 e.preventDefault();
                 
@@ -294,6 +303,9 @@ def home_page():
                     if (response.ok) {{
                         statusMsg.className = 'success';
                         statusMsg.textContent = 'Test submitted successfully!';
+                        // Increment the test ID on the client side
+                        const currentId = document.getElementById('testid').value;
+                        document.getElementById('testid').value = incrementTestId(currentId);
                     }} else {{
                         statusMsg.className = 'error';
                         statusMsg.textContent = 'Error: ' + (result.error || 'Failed to submit test');
