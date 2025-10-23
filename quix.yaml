@@ -20,7 +20,7 @@ deployments:
     variables:
       - name: TEST_API_URL
         inputType: FreeText
-        value: https://config-api-svc-quixers-testrigdemoconfigurationmet-5f306d01.az-france-0.app.quix.io/api/v1/tests
+        value: https://backend-quixers-testrigdemoconfigurationmet-5f306d01.az-france-0.app.quix.io/api/v1/tests
       - name: ECU_API_URL
         inputType: FreeText
         value: https://ecu-quixers-testrigdemotestrigsimulator-prod.az-france-0.app.quix.io/ecu/start
