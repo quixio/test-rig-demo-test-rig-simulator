@@ -243,7 +243,7 @@ def home_page():
                 
                 <div class="form-group">
                     <label for="holdtime">Hold Time:</label>
-                    <input type="text" id="holdtime" name="holdtime" value="3000" required>
+                    <input type="text" id="holdtime" name="holdtime" value="30000" required>
                 </div>
                 
                 <div id="status-message"></div>
