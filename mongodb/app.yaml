@@ -1,0 +1,17 @@
+name: mongodb
+language: docker
+variables:
+  - name: MONGO_INITDB_ROOT_USERNAME
+    inputType: Secret
+    multiline: false
+    description: The root username to initialize MongoDB with
+    defaultValue: MONGO_USER
+    required: true
+  - name: MONGO_INITDB_ROOT_PASSWORD
+    inputType: Secret
+    description: The root password to initialize MongoDB with
+    defaultValue: MONGO_PASSWORD
+    required: true
+dockerfile: dockerfile
+defaultFile: dockerfile
+libraryItemId: mongodb

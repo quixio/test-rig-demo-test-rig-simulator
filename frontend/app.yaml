@@ -1,0 +1,29 @@
+name: frontend
+language: python
+variables:
+  - name: "Testmanager__Api__Url"
+    inputType: FreeText
+    description: Test Manager API URL.
+  - name: "Testmanager__Host"
+    inputType: FreeText
+    description: UI server host.
+    value: "0.0.0.0"
+    required: true
+  - name: "Testmanager__Port"
+    inputType: FreeText
+    description: UI server port.
+    value: "80"
+    required: true
+  - name: "Testmanager__Timezone"
+    inputType: FreeText
+    description: Timezone to be used for the dates.
+    value: "Europe/Berlin"
+    required: true
+  - name: "Testmanager__Loglevel"
+    inputType: FreeText
+    description: A log level of the UI application. Can be one of "DEBUG", "INFO", "WARNING", "ERROR".
+    value: "INFO"
+    required: true
+dockerfile: dockerfile
+runEntryPoint: main.py
+defaultFile: main.py
