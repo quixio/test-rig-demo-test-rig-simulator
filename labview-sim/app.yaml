@@ -1,5 +1,9 @@
 name: labview-sim
 language: python
+variables:
+  - name: TEST_API_URL
+    inputType: FreeText
+    multiline: false
 dockerfile: dockerfile
 runEntryPoint: main.py
 defaultFile: main.py
