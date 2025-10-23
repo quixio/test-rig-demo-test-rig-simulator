@@ -4,6 +4,10 @@ variables:
   - name: TEST_API_URL
     inputType: FreeText
     multiline: false
+  - name: ECU_API_URL
+    inputType: FreeText
+    multiline: false
+    defaultValue: https://ecu-quixers-testrigdemotestrigsimulator-prod.az-france-0.app.quix.io/ecu/start
 dockerfile: dockerfile
 runEntryPoint: main.py
 defaultFile: main.py
