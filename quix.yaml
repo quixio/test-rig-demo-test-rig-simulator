@@ -6,17 +6,6 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: RigECU
-    application: rigecu
-    version: latest
-    deploymentType: Service
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: ecu
   - name: labview-sim
     application: labview-sim
     version: latest
@@ -28,6 +17,17 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: labview-sim
+  - name: Rig ECU Sim
+    application: rigecu
+    version: latest
+    deploymentType: Service
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: ecu
 
 # This section describes the Topics of the data pipeline
 topics:
