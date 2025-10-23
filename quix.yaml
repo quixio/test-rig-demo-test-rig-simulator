@@ -17,12 +17,6 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: gateway
-    variables:
-      - name: output
-        inputType: OutputTopic
-        description: This is the output topic for hello world data
-        required: true
-        value: http-source
 
 # This section describes the Topics of the data pipeline
 topics:
