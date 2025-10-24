@@ -159,6 +159,20 @@ def home_page():
                 height: auto;
             }}
 
+            .video-container {{
+                flex-shrink: 0;
+                display: none;
+            }}
+
+            .video-container video {{
+                border: 2px outset #dfdfdf;
+                border-right-color: #808080;
+                border-bottom-color: #808080;
+                background-color: #000000;
+                max-width: 500px;
+                height: auto;
+            }}
+
             #status-message {{
                 margin-top: 10px;
                 padding: 8px;
@@ -255,8 +269,15 @@ def home_page():
             </form>
             </div>
             
-            <div class="image-container">
+            <div class="image-container" id="imageContainer">
                 <img src="/image_1.png" alt="Test Image">
+            </div>
+
+            <div class="video-container" id="videoContainer">
+                <video id="testVideo" controls autoplay>
+                    <source src="/video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         </div>
 
@@ -303,6 +324,12 @@ def home_page():
                     if (response.ok) {{
                         statusMsg.className = 'success';
                         statusMsg.textContent = 'Test submitted successfully!';
+                        
+                        // Show video and hide image
+                        document.getElementById('imageContainer').style.display = 'none';
+                        document.getElementById('videoContainer').style.display = 'block';
+                        document.getElementById('testVideo').play();
+                        
                         // Increment the test ID on the client side
                         const currentId = document.getElementById('testid').value;
                         document.getElementById('testid').value = incrementTestId(currentId);
