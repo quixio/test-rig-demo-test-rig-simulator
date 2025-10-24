@@ -123,3 +123,6 @@ def post_data_without_key():
             logger.debug(f"Sent final chunk: {test_id} :: {len(data_chunk)} items, Response: Not sent (no endpoint configured)")
 
     return Response(status=200)
+
+if __name__ == '__main__':
+    serve(app, host="0.0.0.0", port=80)
