@@ -75,18 +75,41 @@ def post_data_without_key():
             "set_speed": set_speed
         }
 
-    # Send data every 50ms for the duration of ramp_delay
-    interval = 50  # in milliseconds
+    # Generate data every 50ms and send chunks every 200ms
+    data_interval = 50  # Generate data every 50ms
+    send_interval = 200  # Send data every 200ms
     end_time = start_time + ramp_delay
 
+    data_chunk = []
+    last_send_time = time.time() * 1000
+
     while time.time() * 1000 < end_time:
-        data_to_send = generate_data()
+        current_time = time.time() * 1000
+
+        # Generate and accumulate data
+        data_to_chunk = generate_data()
+        data_chunk.append(data_to_chunk)
+
+        # Send chunk if send_interval has elapsed
+        if current_time - last_send_time >= send_interval:
+            if data_api_endpoint != "":
+                response = requests.post(data_api_endpoint, json={"test_id": test_id, "data": data_chunk})
+                logger.debug(f"Sent chunk with {len(data_chunk)} items, Response: {response.status_code}")
+            else:
+                logger.debug(f"Sent chunk: {test_id} :: {len(data_chunk)} items, Response: Not sent (no endpoint configured)")
+            
+            data_chunk = []
+            last_send_time = current_time
+
+        time.sleep(data_interval / 1000)  # Convert milliseconds to seconds
+
+    # Send any remaining data in the final chunk
+    if data_chunk:
         if data_api_endpoint != "":
-            response = requests.post(data_api_endpoint, json={"test_id": test_id, "data": [data_to_send]})
-            logger.debug(f"Sent data: {data_to_send}, Response: {response.status_code}")
+            response = requests.post(data_api_endpoint, json={"test_id": test_id, "data": data_chunk})
+            logger.debug(f"Sent final chunk with {len(data_chunk)} items, Response: {response.status_code}")
         else:
-            logger.debug(f"Sent data: {test_id} :: {data_to_send}, Response: Not sent (no endpoint configured)")
-        time.sleep(interval / 1000)  # Convert milliseconds to seconds
+            logger.debug(f"Sent final chunk: {test_id} :: {len(data_chunk)} items, Response: Not sent (no endpoint configured)")
 
     return Response(status=200)
 
