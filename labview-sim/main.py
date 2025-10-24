@@ -44,6 +44,10 @@ def increment_test_id(test_id):
 def serve_image():
     return app.send_static_file('image_1.png')
 
+@app.route("/video.mp4")
+def serve_video():
+    return app.send_static_file('video.mp4')
+
 @app.route("/", methods=['GET'])
 def home_page():
     global current_test_id
