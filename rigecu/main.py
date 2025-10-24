@@ -32,6 +32,15 @@ app.config['SWAGGER'] = {
 
 swagger = Swagger(app)
 
+def build_api_url(endpoint, test_id):
+    """Build the API URL by appending test_id to the endpoint, handling trailing slashes."""
+    if not endpoint:
+        return None
+    
+    # Remove trailing slash from endpoint if present
+    endpoint = endpoint.rstrip('/')
+    return f"{endpoint}/{test_id}"
+
 @app.route("/", methods=['GET'])
 def redirect_to_swagger():
     return redirect("/apidocs/")
@@ -93,7 +102,8 @@ def post_data_without_key():
         # Send chunk if send_interval has elapsed
         if current_time - last_send_time >= send_interval:
             if data_api_endpoint != "":
-                response = requests.post(data_api_endpoint, json={"test_id": test_id, "data": data_chunk})
+                api_url = build_api_url(data_api_endpoint, test_id)
+                response = requests.post(api_url, json={"data": data_chunk})
                 logger.debug(f"Sent chunk with {len(data_chunk)} items, Response: {response.status_code}")
             else:
                 logger.debug(f"Sent chunk: {test_id} :: {len(data_chunk)} items, Response: Not sent (no endpoint configured)")
@@ -106,12 +116,10 @@ def post_data_without_key():
     # Send any remaining data in the final chunk
     if data_chunk:
         if data_api_endpoint != "":
-            response = requests.post(data_api_endpoint, json={"test_id": test_id, "data": data_chunk})
+            api_url = build_api_url(data_api_endpoint, test_id)
+            response = requests.post(api_url, json={"data": data_chunk})
             logger.debug(f"Sent final chunk with {len(data_chunk)} items, Response: {response.status_code}")
         else:
             logger.debug(f"Sent final chunk: {test_id} :: {len(data_chunk)} items, Response: Not sent (no endpoint configured)")
 
     return Response(status=200)
-
-if __name__ == '__main__':
-    serve(app, host="0.0.0.0", port=80)
