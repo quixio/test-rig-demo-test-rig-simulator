@@ -431,9 +431,9 @@ def api_submit_test():
                 except requests.exceptions.RequestException as e:
                     logger.error(f"Failed to post ECU data to API: {str(e)}")
             
-            # Increment the test ID for the next submission
-            current_test_id = increment_test_id(current_test_id)
-            
+                # Increment the test ID for the next submission
+                current_test_id = increment_test_id(current_test_id)
+                
             return jsonify({"success": True, "next_test_id": current_test_id}), 200
 
         except requests.exceptions.RequestException as e:
