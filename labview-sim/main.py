@@ -401,35 +401,35 @@ def api_submit_test():
                 timeout=10
             )
             
-            if response.status_code in [200, 201]:
-                logger.info(f"Test data posted successfully. Response: {response.text}")
-            else:
+            if response.status_code not in [200, 201]:
                 logger.warning(f"API returned status code {response.status_code}. Response: {response.text}")
+            else:
+                logger.info(f"Test data posted successfully. Response: {response.text}")
                 
-            # Post ECU data to a different API
-            try:
-                ecu_data = {
-                    "test_id": data.get('testid'),
-                    "speeds": [data.get('throttle')],
-                    "ramp_delay": data.get('holdtime')
-                }
+                # Post ECU data to a different API
+                try:
+                    ecu_data = {
+                        "test_id": data.get('testid'),
+                        "speeds": [data.get('throttle')],
+                        "ramp_delay": data.get('holdtime')
+                    }
+                    
+                    logger.info(f"ECU data formatted: {json.dumps(ecu_data)}")
+                    
+                    ecu_response = requests.post(
+                        ecu_api_url,
+                        json=ecu_data,
+                        headers={'Content-Type': 'application/json'},
+                        timeout=10
+                    )
+                    
+                    if ecu_response.status_code in [200, 201]:
+                        logger.info(f"ECU data posted successfully. Response: {ecu_response.text}")
+                    else:
+                        logger.warning(f"ECU API returned status code {ecu_response.status_code}. Response: {ecu_response.text}")
                 
-                logger.info(f"ECU data formatted: {json.dumps(ecu_data)}")
-                
-                ecu_response = requests.post(
-                    ecu_api_url,
-                    json=ecu_data,
-                    headers={'Content-Type': 'application/json'},
-                    timeout=10
-                )
-                
-                if ecu_response.status_code in [200, 201]:
-                    logger.info(f"ECU data posted successfully. Response: {ecu_response.text}")
-                else:
-                    logger.warning(f"ECU API returned status code {ecu_response.status_code}. Response: {ecu_response.text}")
-            
-            except requests.exceptions.RequestException as e:
-                logger.error(f"Failed to post ECU data to API: {str(e)}")
+                except requests.exceptions.RequestException as e:
+                    logger.error(f"Failed to post ECU data to API: {str(e)}")
             
             # Increment the test ID for the next submission
             current_test_id = increment_test_id(current_test_id)
