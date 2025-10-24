@@ -183,7 +183,7 @@ def home_page():
         </style>
     </head>
     <body>
-        <h1>LabVIEW Simulation</h1>
+        <h1>LabTECH</h1>
         <div class="main-container">
             <div class="form-container">
             <div class="title-bar">
