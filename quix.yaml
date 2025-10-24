@@ -6,21 +6,6 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: Rig ECU Sim
-    application: rigecu
-    version: latest
-    deploymentType: Service
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: ecu
-    variables:
-      - name: data_api_endpoint
-        inputType: FreeText
-        value: https://test-rig-data-quixers-testrigdemomeasurementdata-prod.az-france-0.app.quix.io/data
   - name: LabTECH
     application: labview-sim
     version: latest
@@ -39,6 +24,21 @@ deployments:
       - name: ECU_API_URL
         inputType: FreeText
         value: https://ecu-quixers-testrigdemotestrigsimulator-prod.az-france-0.app.quix.io/ecu/start
+  - name: Rig ECU
+    application: rigecu
+    version: latest
+    deploymentType: Service
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: ecu
+    variables:
+      - name: data_api_endpoint
+        inputType: FreeText
+        value: https://test-rig-data-quixers-testrigdemomeasurementdata-prod.az-france-0.app.quix.io/data
 
 # This section describes the Topics of the data pipeline
 topics:
