@@ -433,7 +433,7 @@ def api_submit_test():
                 timeout=10
             )
             
-            if ecu_response.status_code not in [200, 201]:
+            if ecu_response.status_code not in [200, 201, 202]:
                 logger.warning(f"ECU API returned status code {ecu_response.status_code}. Response: {ecu_response.text}")
                 return jsonify({"error": f"ECU API failed with status {ecu_response.status_code}"}), 400
             
