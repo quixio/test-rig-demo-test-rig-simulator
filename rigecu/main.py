@@ -24,6 +24,9 @@ app = Flask(__name__)
 # Enable CORS for all routes and origins by default
 CORS(app)
 
+# Dictionary to track active test threads
+active_tests = {}
+
 def build_api_url(endpoint, test_id):
     """Build the API URL by appending test_id to the endpoint, handling trailing slashes."""
     if not endpoint:
@@ -36,6 +39,7 @@ def build_api_url(endpoint, test_id):
 def run_ecu_test(test_id, ramp_delay, set_speed, start_time):
     """Run the ECU test in a background thread."""
     try:
+        active_tests[test_id] = {"status": "running", "start_time": time.time()}
         def generate_data():
             # Calculate values based on set_speed
             base_voltage = 14.9 - (set_speed * 1.6)
@@ -105,6 +109,11 @@ def run_ecu_test(test_id, ramp_delay, set_speed, start_time):
     
     except Exception as e:
         logger.error(f"Error running ECU test {test_id}: {str(e)}")
+    
+    finally:
+        # Mark the test as completed
+        if test_id in active_tests:
+            active_tests[test_id]["status"] = "completed"
 
 @app.route("/", methods=['GET'])
 def redirect_to_swagger():
@@ -118,6 +127,19 @@ def post_data_without_key():
 
     # Extract test_id and ramp_delay from the request
     test_id = data.get("test_id")
+    
+    # Check if a test with this ID is already running
+    if test_id in active_tests and active_tests[test_id]["status"] == "running":
+        logger.warning(f"Test {test_id} is already running")
+        return Response(
+            json.dumps({
+                "status": "error",
+                "message": f"Test {test_id} is already running"
+            }),
+            mimetype='application/json',
+            status=409
+        )
+    
     ramp_delay = int(data.get("ramp_delay", 6000))  # Default to 6000ms if not provided
     set_speed = float(data.get("set_speed", 0.5))  # Default to 0.5 if not provided
     start_time = time.time() * 1000  # Start time in milliseconds
