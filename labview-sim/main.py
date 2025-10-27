@@ -309,8 +309,8 @@ def home_page():
                     <ul>
                         <li><a href="#">Link 1</a></li>
                         <li><a href="#">Link 2</a></li>
-                        <li><a href="#">Link 3</a></li>
-                        <li><a href="#">Link 4</a></li>
+                        <li><a href="https://marimo-analysis-quixers-testrigdemoadvancedanalytics-prod.az-france-0.app.quix.io">Full Analysis</a></li>
+                        <li><a href="https://simplemarimo-c42ffa5-quixers-testrigdemoadvancedanalytics-prod.az-france-0.app.quix.io">Simple Analysis</a></li>
                     </ul>
                 </div>
             </div>
