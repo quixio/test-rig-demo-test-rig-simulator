@@ -307,8 +307,9 @@ def home_page():
                 <img src="/image_1.png" alt="Test Image">
                 <div class="media-links">
                     <ul>
-                        <li><a href="#">Link 1</a></li>
-                        <li><a href="#">Link 2</a></li>
+                        <li><a href="">Link 1</a></li>
+                        <li><a href="https://portal.cloud.quix.io/pipeline?workspace=quixers-testrigdemomeasurementdata-prod">Measurement data</a></li>
+                        <li><a href="https://frontend-7bdbce0-quixers-testrigdemoconfigurationmet-5f306d01.az-france-0.app.quix.io/">Test Manager</a></li>
                         <li><a href="https://marimo-analysis-quixers-testrigdemoadvancedanalytics-prod.az-france-0.app.quix.io">Full Analysis</a></li>
                         <li><a href="https://simplemarimo-c42ffa5-quixers-testrigdemoadvancedanalytics-prod.az-france-0.app.quix.io">Simple Analysis</a></li>
                     </ul>
