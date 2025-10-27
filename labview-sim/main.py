@@ -401,6 +401,10 @@ def api_submit_test():
                 timeout=10
             )
             
+            if response.status_code == 409:
+                logger.warning(f"Test API returned status code 409. Response: {response.text}")
+                return jsonify({"error": f"Test ID '{data.get('testid')}' already exists. Please use a different Test ID."}), 409
+            
             if response.status_code not in [200, 201]:
                 logger.warning(f"Test API returned status code {response.status_code}. Response: {response.text}")
                 return jsonify({"error": f"Test API failed with status {response.status_code}"}), 400
