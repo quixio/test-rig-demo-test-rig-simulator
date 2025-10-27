@@ -72,6 +72,7 @@ def home_page():
                 padding: 8px;
                 width: 450px;
                 box-shadow: 1px 1px 0 #ffffff inset, -1px -1px 0 #808080 inset;
+                height: fit-content;
             }}
             
             .title-bar {{
