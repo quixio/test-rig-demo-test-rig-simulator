@@ -34,7 +34,7 @@ def build_api_url(endpoint, test_id):
 
 @app.route("/", methods=['GET'])
 def redirect_to_swagger():
-    html = ""
+    html = "POST data to `/ecu/start`"
     return Response(html, mimetype='text/html', status=200)
 
 @app.route("/ecu/start", methods=['POST'])
