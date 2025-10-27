@@ -1,4 +1,4 @@
-name: labview-sim
+name: ecu
 language: python
 variables:
   - name: data_api_endpoint
