@@ -313,11 +313,6 @@ def home_page():
                     holdtime: formData.get('holdtime')
                 }};
                 
-                // Show video and hide image immediately
-                document.getElementById('imageContainer').style.display = 'none';
-                document.getElementById('videoContainer').style.display = 'block';
-                document.getElementById('testVideo').play();
-                
                 try {{
                     const response = await fetch('/api/submit-test', {{
                         method: 'POST',
@@ -337,6 +332,12 @@ def home_page():
                         // Increment the test ID on the client side
                         const currentId = document.getElementById('testid').value;
                         document.getElementById('testid').value = incrementTestId(currentId);
+
+                        // Show video and hide image immediately
+                        document.getElementById('imageContainer').style.display = 'none';
+                        document.getElementById('videoContainer').style.display = 'block';
+                        document.getElementById('testVideo').play();
+                        
                     }} else {{
                         statusMsg.className = 'error';
                         statusMsg.textContent = 'Error: ' + (result.error || 'Failed to submit test');
