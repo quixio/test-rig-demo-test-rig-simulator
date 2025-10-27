@@ -2,7 +2,6 @@ import os
 import datetime
 import json
 from flask import Flask, request, Response, redirect
-from flasgger import Swagger
 from waitress import serve
 import time
 import random
@@ -24,14 +23,6 @@ app = Flask(__name__)
 # Enable CORS for all routes and origins by default
 CORS(app)
 
-app.config['SWAGGER'] = {
-    'title': 'Test Rig ECU Simulator',
-    'description': 'This API is intended to simulate a test rig.',
-    'uiversion': 3
-}
-
-swagger = Swagger(app)
-
 def build_api_url(endpoint, test_id):
     """Build the API URL by appending test_id to the endpoint, handling trailing slashes."""
     if not endpoint:
@@ -43,7 +34,8 @@ def build_api_url(endpoint, test_id):
 
 @app.route("/", methods=['GET'])
 def redirect_to_swagger():
-    return redirect("/apidocs/")
+    html = ""
+    return Response(html, mimetype='text/html', status=200)
 
 @app.route("/ecu/start", methods=['POST'])
 def post_data_without_key():
