@@ -177,6 +177,36 @@ def home_page():
                 height: auto;
             }}
 
+            .media-links {{
+                margin-top: 15px;
+                padding: 8px;
+                background-color: #c0c0c0;
+                border: 2px inset #dfdfdf;
+                border-right-color: #808080;
+                border-bottom-color: #808080;
+            }}
+
+            .media-links ul {{
+                list-style-type: disc;
+                margin: 0;
+                padding-left: 20px;
+                font-size: 11px;
+            }}
+
+            .media-links li {{
+                margin-bottom: 5px;
+            }}
+
+            .media-links a {{
+                color: #0000FF;
+                text-decoration: underline;
+                cursor: pointer;
+            }}
+
+            .media-links a:hover {{
+                color: #FF0000;
+            }}
+
             #status-message {{
                 margin-top: 10px;
                 padding: 8px;
@@ -275,6 +305,14 @@ def home_page():
             
             <div class="image-container" id="imageContainer">
                 <img src="/image_1.png" alt="Test Image">
+                <div class="media-links">
+                    <ul>
+                        <li><a href="#">Link 1</a></li>
+                        <li><a href="#">Link 2</a></li>
+                        <li><a href="#">Link 3</a></li>
+                        <li><a href="#">Link 4</a></li>
+                    </ul>
+                </div>
             </div>
 
             <div class="video-container" id="videoContainer">
@@ -282,6 +320,14 @@ def home_page():
                     <source src="/video.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
+                <div class="media-links">
+                    <ul>
+                        <li><a href="#">Link 1</a></li>
+                        <li><a href="#">Link 2</a></li>
+                        <li><a href="#">Link 3</a></li>
+                        <li><a href="#">Link 4</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
